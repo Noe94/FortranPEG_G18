@@ -10,6 +10,9 @@ function App() {
         <p>
           Ya funciono prueba.
         </p>
+        <p>
+          Prueba 2
+        </p>
       </header>
     </div>
   );
