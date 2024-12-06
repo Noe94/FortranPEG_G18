@@ -1,19 +1,13 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import CodeEditor from './components/CodeEditor';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Ya funciono prueba.
-        </p>
-        <p>
-          Prueba 2
-        </p>
-      </header>
+    <div>
+      <h1>FortranPEG_G18</h1>
+      <CodeEditor />
     </div>
   );
 }
