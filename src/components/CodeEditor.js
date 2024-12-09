@@ -91,7 +91,7 @@ const handleRunCode = () => {
   console.log("Código ingresado:", code); // Verifica qué código está siendo procesado
   
   // Crear el parser con la gramática proporcionada en el código ingresado
-  const parser = createParser(code); // 'code' contiene la gramática proporcionada por el usuario
+  const parser = createParser(code.toLowerCase()); // 'code' contiene la gramática proporcionada por el usuario
 
   if (!parser) {
     // Si no se puede generar el parser, la gramática es inválida
