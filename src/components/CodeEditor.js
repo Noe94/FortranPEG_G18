@@ -1,22 +1,21 @@
 import React, { useState } from "react";
 import MonacoEditor from "@monaco-editor/react";
-import peggy from "peggy"; // Importar PeggyJS
+import peggy from "peggy";
 
-// Estilos mejorados para el diseño
 const styles = {
   container: {
     display: "flex",
     height: "100vh",
     padding: "20px",
     gap: "20px",
-    backgroundColor: "#2b2b2b", // Fondo oscuro para que se asemeje más a VSCode
+    backgroundColor: "#2b2b2b", 
   },
   leftPanel: {
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    gap: "10px", // Reducir el espacio entre elementos
-    backgroundColor: "#1e1e1e", // Fondo oscuro en el panel izquierdo
+    gap: "10px", 
+    backgroundColor: "#1e1e1e", 
     padding: "10px",
     borderRadius: "8px",
   },
@@ -25,47 +24,47 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: "10px",
-    backgroundColor: "#1e1e1e", // Fondo oscuro en el panel derecho
+    backgroundColor: "#1e1e1e",
     padding: "10px",
     borderRadius: "8px",
   },
   buttonContainer: {
     display: "flex",
-    gap: "10px", // Espacio entre botones
-    justifyContent: "flex-start", // Alinea los botones horizontalmente
+    gap: "10px", 
+    justifyContent: "flex-start", 
   },
   button: {
-    padding: "5px 10px", // Botones más pequeños
-    backgroundColor: "#007acc", // Azul similar a VSCode
+    padding: "5px 10px",
+    backgroundColor: "#007acc", 
     color: "white",
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
-    fontSize: "12px", // Reducir tamaño de texto de los botones
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)", // Sombra sutil
+    fontSize: "12px", 
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)", 
     transition: "background-color 0.2s ease-in-out",
   },
   buttonHover: {
-    backgroundColor: "#005a8e", // Color más oscuro al hacer hover
+    backgroundColor: "#005a8e", 
   },
   editorContainer: {
     flex: 1,
     backgroundColor: "#1e1e1e",
     borderRadius: "8px",
-    overflow: "hidden", // Evitar desbordes
+    overflow: "hidden", 
   },
   console: {
     height: "500px",
-    backgroundColor: "#1e1e1e", // Fondo oscuro
-    color: "lightgray", // Color de texto similar al de las terminales
+    backgroundColor: "#1e1e1e", 
+    color: "lightgray",
     padding: "10px",
     borderRadius: "8px",
-    fontFamily: "monospace", // Fuente de terminal
-    fontSize: "14px", // Tamaño de letra más pequeño para simular una terminal
-    overflowY: "auto", // Permitir scroll si hay más contenido
+    fontFamily: "monospace", 
+    fontSize: "14px", 
+    overflowY: "auto", 
     boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
-    whiteSpace: "pre-wrap", // Respetar saltos de línea y espacios
-    lineHeight: "1.5", // Separación de líneas más natural
+    whiteSpace: "pre-wrap", 
+    lineHeight: "1.5", 
   },
 };
 
@@ -73,14 +72,10 @@ const Editordecodigo = () => {
   const [code, setCode] = useState("// Escribe tu código aquí");
   const [output, setOutput] = useState("");
 
-// Crear el parser con PeggyJS
-// Crear el parser con PeggyJS
 const createParser = (pegGrammar) => {
   try {
-    // Intentamos generar el parser con la gramática proporcionada
     return peggy.generate(pegGrammar);  
   } catch (e) {
-    // Si hay un error en la gramática, se captura y se muestra en la salida
     setOutput(prevOutput => prevOutput + `Error en la gramática: ${e.message}\n`);
     return null;
   }
@@ -88,33 +83,30 @@ const createParser = (pegGrammar) => {
 
 const handleRunCode = () => {
   setOutput("")
-  console.log("Código ingresado:", code); // Verifica qué código está siendo procesado
+  console.log("Código ingresado:", code);
   
-  // Crear el parser con la gramática proporcionada en el código ingresado
-  const parser = createParser(code.toLowerCase()); // 'code' contiene la gramática proporcionada por el usuario
+  const parser = createParser(code.toLowerCase()); 
 
   if (!parser) {
-    // Si no se puede generar el parser, la gramática es inválida
+    
     setOutput(prevOutput => prevOutput + "Error: La gramática PEG es inválida.\n");
     return;
   }
 
-  // Si la gramática es válida, mostrar un mensaje de éxito
+  
   setOutput(prevOutput => prevOutput + "¡La gramática PEG es válida!\n");
 };
 
-  
 
-  // Función para limpiar la consola de salida
   const handleClearConsole = () => {
     setOutput("");
   };
 
   return (
     <div style={styles.container}>
-      {/* Panel izquierdo */}
+      
       <div style={styles.leftPanel}>
-        {/* Botones */}
+      
         <div style={styles.buttonContainer}>
           <button style={styles.button} onClick={handleRunCode}>
             Ejecutar Código
@@ -133,11 +125,11 @@ const handleRunCode = () => {
           </button>
         </div>
 
-        {/* Editor de código */}
+   
         <div style={styles.editorContainer}>
           <MonacoEditor
             height="400px"
-            language="plaintext" // Cambié de "javascript" a "plaintext"
+            language="plaintext" 
             theme="vs-dark"
             value={code}
             onChange={(value) => setCode(value)}
@@ -145,7 +137,7 @@ const handleRunCode = () => {
         </div>
       </div>
 
-      {/* Panel derecho (Consola de salida con un div simple) */}
+   
       <div style={styles.rightPanel}>
         <div style={styles.console}>{output}</div>
       </div>
