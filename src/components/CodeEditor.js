@@ -101,6 +101,10 @@ const handleRunCode = () => {
   const handleClearConsole = () => {
     setOutput("");
   };
+  const resetConsole = () => {
+    setOutput("");
+    setCode("// Escribe tu código aquí");
+  };
 
   return (
     <div style={styles.container}>
@@ -116,7 +120,7 @@ const handleRunCode = () => {
           </button>
           <button
             style={styles.button}
-            onClick={() => setCode("// Escribe tu código aquí")}
+            onClick={resetConsole}
           >
             Resetear
           </button>
