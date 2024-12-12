@@ -9,7 +9,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.121",
+    "@types/node": "^16.18.12",
     "@types/react": "^18.3.13",
     "@types/react-dom": "^18.3.1",
     "react": "^18.3.1",
@@ -33,7 +33,12 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "no-unused-vars": "warn",
+      "no-control-regex": "off",
+      "no-useless-escape": "off"
+    }
   },
   "browserslist": {
     "production": [
@@ -48,6 +53,9 @@
     ]
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.26.3",
+    "cross-env": "^7.0.3",
     "gh-pages": "^6.2.0",
     "peggy": "^4.2.0"
   },

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import MonacoEditor from "@monaco-editor/react";
-import peggy from "peggy";
+import Parser from "../gramaticaActualizada.js";
 
 const styles = {
   container: {
@@ -8,14 +8,14 @@ const styles = {
     height: "100vh",
     padding: "20px",
     gap: "20px",
-    backgroundColor: "#2b2b2b", 
+    backgroundColor: "#2b2b2b",
   },
   leftPanel: {
     flex: 1,
     display: "flex",
     flexDirection: "column",
-    gap: "10px", 
-    backgroundColor: "#1e1e1e", 
+    gap: "10px",
+    backgroundColor: "#1e1e1e",
     padding: "10px",
     borderRadius: "8px",
   },
@@ -30,87 +30,105 @@ const styles = {
   },
   buttonContainer: {
     display: "flex",
-    gap: "10px", 
-    justifyContent: "flex-start", 
+    gap: "10px",
+    justifyContent: "flex-start",
   },
   button: {
     padding: "5px 10px",
-    backgroundColor: "#007acc", 
+    backgroundColor: "#007acc",
     color: "white",
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
-    fontSize: "12px", 
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)", 
+    fontSize: "12px",
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
     transition: "background-color 0.2s ease-in-out",
-  },
-  buttonHover: {
-    backgroundColor: "#005a8e", 
   },
   editorContainer: {
     flex: 1,
     backgroundColor: "#1e1e1e",
     borderRadius: "8px",
-    overflow: "hidden", 
+    overflow: "hidden",
   },
   console: {
     height: "500px",
-    backgroundColor: "#1e1e1e", 
+    backgroundColor: "#1e1e1e",
     color: "lightgray",
     padding: "10px",
     borderRadius: "8px",
-    fontFamily: "monospace", 
-    fontSize: "14px", 
-    overflowY: "auto", 
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.2)",
-    whiteSpace: "pre-wrap", 
-    lineHeight: "1.5", 
+    fontFamily: "monospace",
+    fontSize: "14px",
+    overflowY: "auto",
+    whiteSpace: "pre-wrap",
+    lineHeight: "1.5",
   },
 };
 
 const Editordecodigo = () => {
-  const [code, setCode] = useState("// Escribe tu código aquí");
+  const [code, setCode] = useState("// Escribe tu gramática aquí");
   const [output, setOutput] = useState("");
 
-const createParser = (pegGrammar) => {
-  try {
-    return peggy.generate(pegGrammar);  
-  } catch (e) {
-    setOutput(prevOutput => prevOutput + `Error en la gramática: ${e.message}\n`);
-    return null;
-  }
-};
+  // Función para formatear el árbol de análisis
+  const formatParseTree = (node, depth = 0) => {
+    if (!node || (typeof node === "string" && node.trim() === "")) {
+      return "";
+    }
 
-const handleRunCode = () => {
-  setOutput("")
-  console.log("Código ingresado:", code);
-  
-  const parser = createParser(code.toLowerCase()); 
+    if (typeof node === "string") {
+      return `${"  ".repeat(depth)}"${node}"`;
+    }
 
-  if (!parser) {
-    
-    setOutput(prevOutput => prevOutput + "Error: La gramática PEG es inválida.\n");
-    return;
-  }
+    if (Array.isArray(node)) {
+      const filteredChildren = node
+        .map((child) => formatParseTree(child, depth + 1))
+        .filter((line) => line.trim() !== "");
+      return filteredChildren.join("\n");
+    }
 
-  
-  setOutput(prevOutput => prevOutput + "¡La gramática PEG es válida!\n");
-};
+    if (typeof node === "object") {
+      return Object.entries(node)
+        .map(([key, value]) => {
+          const formattedValue = formatParseTree(value, depth + 1);
+          return formattedValue
+            ? `${"  ".repeat(depth)}${key}:\n${formattedValue}`
+            : null;
+        })
+        .filter((line) => line !== null)
+        .join("\n");
+    }
 
+    return `${"  ".repeat(depth)}${String(node)}`;
+  };
+
+  const handleRunCode = () => {
+    setOutput("");
+    try {
+      const result = Parser.parse(code);
+      const formattedResult = formatParseTree(result);
+      setOutput(`¡La gramática PEG es válida!\n\n${formattedResult}`);
+    } catch (error) {
+      let errorMessage = `Error al analizar la gramática:\n${error.message}\n`;
+      if (error.location) {
+        const { start, end } = error.location;
+        errorMessage += `Error en línea ${start.line}, columna ${start.column}.\n`;
+        errorMessage += `Rango de caracteres: ${start.offset} - ${end.offset}`;
+      }
+      setOutput(errorMessage);
+    }
+  };
 
   const handleClearConsole = () => {
     setOutput("");
   };
+
   const resetConsole = () => {
     setOutput("");
-    setCode("// Escribe tu código aquí");
+    setCode("// Escribe tu gramática aquí");
   };
 
   return (
     <div style={styles.container}>
-      
       <div style={styles.leftPanel}>
-      
         <div style={styles.buttonContainer}>
           <button style={styles.button} onClick={handleRunCode}>
             Ejecutar Código
@@ -118,10 +136,7 @@ const handleRunCode = () => {
           <button style={styles.button} onClick={() => setCode("")}>
             Limpiar Código
           </button>
-          <button
-            style={styles.button}
-            onClick={resetConsole}
-          >
+          <button style={styles.button} onClick={resetConsole}>
             Resetear
           </button>
           <button style={styles.button} onClick={handleClearConsole}>
@@ -129,19 +144,17 @@ const handleRunCode = () => {
           </button>
         </div>
 
-   
         <div style={styles.editorContainer}>
           <MonacoEditor
             height="400px"
-            language="plaintext" 
+            language="plaintext"
             theme="vs-dark"
             value={code}
-            onChange={(value) => setCode(value)}
+            onChange={(value) => setCode(value || "")}
           />
         </div>
       </div>
 
-   
       <div style={styles.rightPanel}>
         <div style={styles.console}>{output}</div>
       </div>
