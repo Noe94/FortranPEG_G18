@@ -1,48 +1,72 @@
 entrada 
-  = definiciones;
+= definiciones;
 
 definiciones 
-  = definicion+;
+= definicion+;
 
 definicion 
-  = etiqueta "=" construccion (";" espacio_nueva_linea)?;
+= etiqueta (espacio literal)? espacio "=" espacio construccion (espacio "/" espacio construccion)* (espacio ";")? espacio_nueva_linea? / comentarios espacio_nueva_linea?;
 
 construccion 
-  = concatenacion ("/" concatenacion)*;
+= concatenacion (espacio "/" espacio concatenacion)*;
 
 concatenacion 
-  = prefijo (_ prefijo)*;
+= prefijo (_ prefijo)*;
 
 prefijo 
-  = ("&" / "!" / "^")? sufijo;
+= ("&" / "!" / "^" / "$" / "@")? _ sufijo;
 
 sufijo 
-  = basico operador_repeticion?;
+= (etiqueta ":")? basico (espacio operador_repeticion)?;
 
 operador_repeticion 
-  = "*" / "+" / "?";
+= "*" / "+" / "?" / "|";
 
 basico 
-  = etiqueta
-  / literal
-  / conjunto_caracteres
-  / comodin
-  / "(" construccion ")";
+= etiqueta
+    / literal
+    / conjunto_caracteres
+    / comodin
+    / coma
+    / agrupacion
+    / "(" espacio construccion espacio ")";
 
-comodin 
-  = ".";
+comodin = ".";
+
+coma = ",";
+
+agrupacion 
+= [0-9] / [a-zA-Z];
 
 literal 
-  = '"' [^"]* '"' / "'" [^']* "'";
+= ('"' [^"]* '"' [i]? / "'" [^']* "'" [i]?);
 
 conjunto_caracteres 
-  = "[" [^\]]+ "]";
+= "[" [^\]]+ "]" [i]?;
 
 etiqueta 
-  = [_a-z][_a-z0-9]*;
+= [_a-zA-Z][_a-zA-Z0-9]*;
+
+comentarios 
+= comentario_linea / comentario_multilinea;
+
+comentario_linea 
+= "//" [^\n\r]*;
+
+comentario_multilinea 
+= "/*" (!"*/" .)* "*/"; // Corregido para compatibilidad con Peggy
 
 espacio_nueva_linea 
-  = [ \t\n\r]+;
+= (espacio_blanco / nueva_linea)*;
+
+nueva_linea 
+= [\n\r]+;
 
 _ 
-  = [ \t]*;
+= [ \t]*;
+
+espacio 
+= [ \t\n\r]*;
+
+espacio_blanco 
+= [ \t]+;

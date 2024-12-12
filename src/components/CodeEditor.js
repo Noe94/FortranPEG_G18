@@ -69,43 +69,43 @@ const Editordecodigo = () => {
   const [output, setOutput] = useState("");
 
   // Función para formatear el árbol de análisis
-  const formatParseTree = (node, depth = 0) => {
-    if (!node || (typeof node === "string" && node.trim() === "")) {
-      return "";
-    } 
+  // const formatParseTree = (node, depth = 0) => {
+  //   if (!node || (typeof node === "string" && node.trim() === "")) {
+  //     return "";
+  //   } 
 
-    if (typeof node === "string") {
-      return `${"  ".repeat(depth)}"${node}"`;
-    }
+  //   if (typeof node === "string") {
+  //     return `${"  ".repeat(depth)}"${node}"`;
+  //   }
 
-    if (Array.isArray(node)) {
-      const filteredChildren = node
-        .map((child) => formatParseTree(child, depth + 1))
-        .filter((line) => line.trim() !== "");
-      return filteredChildren.join("\n");
-    }
+  //   if (Array.isArray(node)) {
+  //     const filteredChildren = node
+  //       .map((child) => formatParseTree(child, depth + 1))
+  //       .filter((line) => line.trim() !== "");
+  //     return filteredChildren.join("\n");
+  //   }
 
-    if (typeof node === "object") {
-      return Object.entries(node)
-        .map(([key, value]) => {
-          const formattedValue = formatParseTree(value, depth + 1);
-          return formattedValue
-            ? `${"  ".repeat(depth)}${key}:\n${formattedValue}`
-            : null;
-        })
-        .filter((line) => line !== null)
-        .join("\n");
-    }
+  //   if (typeof node === "object") {
+  //     return Object.entries(node)
+  //       .map(([key, value]) => {
+  //         const formattedValue = formatParseTree(value, depth + 1);
+  //         return formattedValue
+  //           ? `${"  ".repeat(depth)}${key}:\n${formattedValue}`
+  //           : null;
+  //       })
+  //       .filter((line) => line !== null)
+  //       .join("\n");
+  //   }
 
-    return `${"  ".repeat(depth)}${String(node)}`;
-  };
+  //   return `${"  ".repeat(depth)}${String(node)}`;
+  // };
 
   const handleRunCode = () => {
     setOutput("");
     try {
       const result = Parser.parse(code);
-      const formattedResult = formatParseTree(result);
-      setOutput(`¡La gramática PEG es válida!\n\n${formattedResult}`);
+      // const formattedResult = formatParseTree(result);
+      setOutput(`¡La gramática PEG es válida!\n\n`);
     } catch (error) {
       let errorMessage = `Error al analizar la gramática:\n${error.message}\n`;
       if (error.location) {
