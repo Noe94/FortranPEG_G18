@@ -17,7 +17,7 @@ prefijo
 = ("&" / "!" / "^" / "$" / "@")? _ sufijo;
 
 sufijo 
-= (etiqueta ":")? basico (espacio operador_repeticion)?;
+= (etiqueta espacio ":" espacio)? basico (espacio operador_repeticion)?;
 
 operador_repeticion 
 = "*" / "+" / "?" / "|";
@@ -54,7 +54,7 @@ comentario_linea
 = "//" [^\n\r]*;
 
 comentario_multilinea 
-= "/*" (!"*/" .)* "*/"; // Corregido para compatibilidad con Peggy
+= "/*" (!"*/" .)* "*/";
 
 espacio_nueva_linea 
 = (espacio_blanco / nueva_linea)*;
