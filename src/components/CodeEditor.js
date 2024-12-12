@@ -72,7 +72,7 @@ const Editordecodigo = () => {
   const formatParseTree = (node, depth = 0) => {
     if (!node || (typeof node === "string" && node.trim() === "")) {
       return "";
-    }
+    } 
 
     if (typeof node === "string") {
       return `${"  ".repeat(depth)}"${node}"`;
